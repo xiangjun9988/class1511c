@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入js-->
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+		
+		<style type="text/css">
+			
+			img{
+				width: 100px;
+				height: 100px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<div>
+				<div v-for="(data,index) in arr">
+				    <img src="http://www.wclimb.site/images/imgLoading.svg" class="img"
+				    	
+				    :id='"http://vue.wclimb.site/images/"+data.img'	/>
+					<!--<img :src='"http://vue.wclimb.site/images/"+data.img' alt="" />-->
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+
+<!--
+	
+	实现的思路: 
+		1. 数据请求是有延时的,
+		
+		2. 在数据请求没有完成的过程中,需要显示一张加载的图片,
+		
+		3. 数据请求完成之后,展示数据请求完成的图片,也就是修改图片的src
+		
+	
+	注意点: dom操作慢  js操作快,需要加延时才能获取到动态创建的dom元素
+	
+	
+	
+-->
+
+<script>
+	
+	var dataModel = {
+		arr:[]
+	}
+	
+	var vm = new Vue({
+		el: "#app",
+		data:dataModel,
+		created() {
+			var url = "http://vue.wclimb.site/vi/list";
+			this.$http.get(url).then(function(res) {
+				console.log(res.data[0])
+				this.arr = res.data[0]
+				
+				
+				// 讲图片的src 修改成   :src='"http://vue.wclimb.site/images/"+data.img'
+				// http://vue.wclimb.site/images/upload_7030edc535f08136658ca7610efeffac
+				
+				
+				setTimeout(function(){
+					var imgArr = document.getElementsByClassName("img")
+					
+					for(var i=0;i<imgArr.length;i++){
+						imgArr[i].src = imgArr[i].id
+					}
+					
+				},10)
+				
+				
+			})
+		}
+	})
+</script>
